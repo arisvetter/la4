@@ -1,5 +1,13 @@
 package main
 
+import (
+    "fmt"
+    "github.com/arisvetter/la4/account"
+    "github.com/arisvetter/la4/checkingAccount"
+    "github.com/arisvetter/la4/customer"
+    "github.com/arisvetter/la4/savingsAccount"
+)
+
 type BankInterface interface {
 	Add() void
 	Acccrue() void
@@ -31,7 +39,7 @@ func (b *Bank) String() string {
 
 func Main() {
 	b := Bank{} //todo chekc if this is right?
-	c customer.CustomerInterface = Customer.NewCustomer("Alice")
+	c = Customer.NewCustomer("Ann")
 	b.add(checkingAccount.NewCheckingAccount("01001", c, 100.0))
 	b.add(savingsAccount.NewSavingsAccount("01002", c, 200.0))
 	b.accrue(.02)

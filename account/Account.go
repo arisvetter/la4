@@ -1,11 +1,15 @@
 package account
 
-import "customer"
+import (
+	"strconv"
+
+	"github.com/arisvetter/la4/customer"
+)
 
 type AccountInterface interface {
 	Balance() float64
-	Deposit()
-	Withdraw()
+	Deposit(amount float64)
+	Withdraw(amount float64)
 	String() string
 }
 
@@ -15,11 +19,11 @@ type Account struct {
 	customer customer.Customer
 }
 
-func Deposit(a *Account, amount float64) {
+func (a *Account) Deposit(amount float64) {
 	a.balance += amount
 }
 
-func Withdraw(a *Account, amount float64) {
+func (a *Account) Withdraw(amount float64) {
 	a.balance -= amount
 }
 
@@ -28,5 +32,5 @@ func (a *Account) Balance() float64 {
 }
 
 func (a *Account) String() string {
-	return a.number + " " + a.customer.String() + a.balance
+	return a.number + " " + a.customer.String() + strconv.FormatFloat(a.balance, 'f', 2, 64)
 }
