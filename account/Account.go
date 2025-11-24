@@ -4,14 +4,14 @@ import "customer"
 
 type AccountInterface interface {
 	Balance() float64
-	Deposit() void
-	Withdraw() void
+	Deposit()
+	Withdraw()
 	String() string
 }
 
 type Account struct {
-	number string
-	balance       float64
+	number   string
+	balance  float64
 	customer customer.Customer
 }
 
@@ -30,4 +30,3 @@ func (a *Account) Balance() float64 {
 func (a *Account) String() string {
 	return a.number + " " + a.customer.String() + a.balance
 }
-

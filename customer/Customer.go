@@ -4,7 +4,7 @@ type CustomerInterface interface {
 	String() string
 }
 
-struct Customer struct {
+type Customer struct {
 	name  string
 }
 
