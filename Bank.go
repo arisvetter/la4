@@ -1,36 +1,38 @@
 package main
 
 import (
-    "fmt"
-    "github.com/arisvetter/la4/account"
-    "github.com/arisvetter/la4/checkingAccount"
-    "github.com/arisvetter/la4/customer"
-    "github.com/arisvetter/la4/savingsAccount"
+	"github.com/arisvetter/la4/account"
+	"github.com/arisvetter/la4/checkingAccount"
+	"github.com/arisvetter/la4/customer"
+	"github.com/arisvetter/la4/savingsAccount"
 )
 
 type BankInterface interface {
-	Add() void
-	Acccrue() void
+	Add()
+	Accrue()
 	String() string
-	Main() void
+	Main()
 }
 
 type Bank struct {
-	AccountList map[account.AccountInterface]set{}
+	AccountList map[account.AccountInterface]struct{}
 }
 
-func (b *Bank) Add() {
-	b.AccountList = make(map[account.AccountInterface]set)
+func (b *Bank) Add(a account.AccountInterface) {
+	if b.AccountList == nil {
+		b.AccountList = make(map[account.AccountInterface]struct{})
+	}
+	b.AccountList[a] = struct{}{}
 }
 
-func (b *Bank) Acccrue() {
+func (b *Bank) Accrue() {
 	for account := range b.AccountList {
-		account.accrue()
+		account.Accrue()
 	}
 }
 
 func (b *Bank) String() string {
-	r = ""
+	r := ""
 	for account := range b.AccountList {
 		r += account.String() + "\n"
 	}
@@ -38,10 +40,10 @@ func (b *Bank) String() string {
 }
 
 func Main() {
-	b := Bank{} //todo chekc if this is right?
-	c = Customer.NewCustomer("Ann")
-	b.add(checkingAccount.NewCheckingAccount("01001", c, 100.0))
-	b.add(savingsAccount.NewSavingsAccount("01002", c, 200.0))
-	b.accrue(.02)
+	b := Bank{}
+	c := customer.NewCustomer("Ann")
+	b.Add(&checkingAccount.CheckingAccount{Account: account.Account{Number: "01001", BalanceField: 100.0, Customer: *c}})
+	b.Add(&savingsAccount.SavingsAccount{Account: account.Account{Number:"01002", Customer: *c, BalanceField: 200.0}, Interest: 0.00})
+	b.Accrue()
 	println(b.String())
 }

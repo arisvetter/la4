@@ -11,26 +11,29 @@ type AccountInterface interface {
 	Deposit(amount float64)
 	Withdraw(amount float64)
 	String() string
+	Accrue(rate float64)
 }
 
 type Account struct {
-	number   string
-	balance  float64
-	customer customer.Customer
+	Number       string
+	BalanceField float64
+	Customer     customer.Customer
 }
 
+func (a *Account) Accrue(rate float64) {}
+
 func (a *Account) Deposit(amount float64) {
-	a.balance += amount
+	a.BalanceField += amount
 }
 
 func (a *Account) Withdraw(amount float64) {
-	a.balance -= amount
+	a.BalanceField -= amount
 }
 
 func (a *Account) Balance() float64 {
-	return a.balance
+	return a.BalanceField
 }
 
 func (a *Account) String() string {
-	return a.number + " " + a.customer.String() + strconv.FormatFloat(a.balance, 'f', 2, 64)
+	return a.Number + " " + a.Customer.String() + strconv.FormatFloat(a.BalanceField, 'f', 2, 64)
 }

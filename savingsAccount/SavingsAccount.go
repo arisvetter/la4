@@ -4,7 +4,6 @@ import "github.com/arisvetter/la4/account"
 
 type SavingsAccountInterface interface {
 	account.AccountInterface
-	Accrue()
 }
 
 type SavingsAccount struct {
@@ -12,6 +11,7 @@ type SavingsAccount struct {
 	Interest float64
 }
 
-func (s *SavingsAccount) Accrue() {
-	s.Account.Deposit(s.Account.Balance() * s.Interest)
+func (a *SavingsAccount) Accrue(rate float64) {
+	a.Interest += a.Account.Balance() * rate
+	a.Account.Deposit(a.Account.Balance() * rate)
 }
