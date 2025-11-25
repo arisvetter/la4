@@ -1,49 +1,55 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/arisvetter/la4/account"
-	"github.com/arisvetter/la4/checkingAccount"
 	"github.com/arisvetter/la4/customer"
-	"github.com/arisvetter/la4/savingsAccount"
 )
 
 type BankInterface interface {
-	Add()
-	Accrue()
+	Add(a account.AccountInterface)
+	Accrue(c chan<- float64, rate float64)
 	String() string
 	Main()
 }
 
 type Bank struct {
-	AccountList map[account.AccountInterface]struct{}
+	accounts map[account.AccountInterface]struct{}
 }
 
 func (b *Bank) Add(a account.AccountInterface) {
-	if b.AccountList == nil {
-		b.AccountList = make(map[account.AccountInterface]struct{})
+	if b.accounts == nil {
+		b.accounts = make(map[account.AccountInterface]struct{})
 	}
-	b.AccountList[a] = struct{}{}
+	b.accounts[a] = struct{}{}
 }
 
-func (b *Bank) Accrue() {
-	for account := range b.AccountList {
-		account.Accrue()
+func (b *Bank) Accrue(c chan<- float64, rate float64) {
+	interest := 0.0
+	for a := range b.accounts {
+		interest += a.Accrue(rate)
 	}
+	c <- interest
 }
 
 func (b *Bank) String() string {
 	r := ""
-	for account := range b.AccountList {
+	for account := range b.accounts {
 		r += account.String() + "\n"
 	}
 	return r
 }
 
-func Main() {
+func main() {
 	b := Bank{}
 	c := customer.NewCustomer("Ann")
-	b.Add(&checkingAccount.CheckingAccount{Account: account.Account{Number: "01001", BalanceField: 100.0, Customer: *c}})
-	b.Add(&savingsAccount.SavingsAccount{Account: account.Account{Number:"01002", Customer: *c, BalanceField: 200.0}, Interest: 0.00})
-	b.Accrue()
-	println(b.String())
+	b.Add(account.NewCheckingAccount("01001", 100.0, *c))
+	b.Add(account.NewSavingsAccount("02001", 200.0, *c))
+	myChan := make(chan float64)
+	go b.Accrue(myChan, 0.02)
+	interest := <-myChan
+	fmt.Printf("Interest from Accruement:%.2f\n", interest)
+	// Please note: I am assuming we want to total the interest from the most recent accruement, not all time interest.
+	fmt.Printf(b.String())
 }
